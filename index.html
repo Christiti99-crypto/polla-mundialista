@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Polla Mundialista 2026</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8c 100%);
+      min-height: 100vh;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: transparent;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1f4e78 0%, #2d5a8c 100%);
+      color: white;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 0.5rem;
+    }
+
+    .content {
+      padding: 2rem;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid #e0e0e0;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      padding: 12px 20px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #666;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .tab-btn.active {
+      color: #1f4e78;
+      border-bottom-color: #1f4e78;
+    }
+
+    .group-selector {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      padding: 1rem;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+
+    .group-btn {
+      padding: 8px 14px;
+      border: 1px solid #ddd;
+      background: white;
+      cursor: pointer;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+      color: #333;
+    }
+
+    .group-btn.active {
+      background: #1f4e78;
+      color: white;
+      border-color: #1f4e78;
+    }
+
+    .group-btn.locked {
+      background: #d4edda;
+      color: #155724;
+      border-color: #28a745;
+    }
+
+    .group-btn.locked::after {
+      content: " 🔒";
+    }
+
+    .group-btn:hover {
+      border-color: #1f4e78;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+      font-size: 14px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #1f4e78;
+      box-shadow: 0 0 0 3px rgba(31, 78, 120, 0.1);
+    }
+
+    input[type="number"] {
+      max-width: 150px;
+    }
+
+    select:disabled {
+      background-color: #f5f5f5;
+      color: #999;
+      cursor: not-allowed;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-right: 8px;
+    }
+
+    .btn-primary {
+      background: #1f4e78;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #163a5a;
+    }
+
+    .btn-danger {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #c82333;
+    }
+
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      font-size: 14px;
+    }
+
+    .alert-info {
+      background: #e3f2fd;
+      color: #1565c0;
+      border-left: 4px solid #1565c0;
+    }
+
+    .alert-warning {
+      background: #fff3e0;
+      color: #e65100;
+      border-left: 4px solid #e65100;
+    }
+
+    .alert-success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border-left: 4px solid #2e7d32;
+    }
+
+    .table-responsive {
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th {
+      background: #f5f5f5;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 2px solid #ddd;
+    }
+
+    td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    tr:hover {
+      background: #fafafa;
+    }
+
+    tr.locked {
+      background: #f0f8f5;
+    }
+
+    tr.closing-soon {
+      background: #fff3cd;
+    }
+
+    .match-cell {
+      font-size: 12px;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .match-teams {
+      font-weight: 600;
+      color: #333;
+    }
+
+    .match-time {
+      font-size: 11px;
+      color: #999;
+      margin-top: 2px;
+    }
+
+    .countdown {
+      font-size: 11px;
+      color: #dc3545;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .lock-icon {
+      color: #28a745;
+      font-weight: bold;
+      margin-left: 4px;
+    }
+
+    .ranking-list {
+      margin-bottom: 1.5rem;
+    }
+
+    .ranking-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 12px 16px;
+      background: #f9f9f9;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      border-left: 4px solid #ddd;
+    }
+
+    .ranking-item.first {
+      border-left-color: #fbc02d;
+      background: #fffbf0;
+    }
+
+    .ranking-item.second {
+      border-left-color: #9e9e9e;
+    }
+
+    .ranking-item.third {
+      border-left-color: #cd7f32;
+      background: #fffbf0;
+    }
+
+    .ranking-position {
+      font-size: 18px;
+      font-weight: 700;
+      min-width: 40px;
+      text-align: center;
+      background: white;
+      padding: 8px 12px;
+      border-radius: 4px;
+    }
+
+    .ranking-item.first .ranking-position {
+      background: #fbc02d;
+      color: #333;
+    }
+
+    .ranking-item.second .ranking-position {
+      background: #bdbdbd;
+      color: white;
+    }
+
+    .ranking-item.third .ranking-position {
+      background: #cd7f32;
+      color: white;
+    }
+
+    .ranking-name {
+      flex: 1;
+      font-weight: 600;
+    }
+
+    .ranking-info {
+      font-size: 12px;
+      color: #666;
+    }
+
+    .ranking-score {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1f4e78;
+      min-width: 80px;
+      text-align: right;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .prediction-select {
+      width: 100%;
+      max-width: 140px;
+      font-size: 12px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1f4e78;
+      margin: 1.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #eee;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .prizes-box {
+      background: linear-gradient(135deg, #fff5e1 0%, #ffe0b2 100%);
+      border: 2px solid #fbc02d;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .prizes-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1f4e78;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .prize-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      background: white;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      border-left: 4px solid #fbc02d;
+    }
+
+    .prize-position {
+      font-weight: 700;
+      font-size: 16px;
+      color: #1f4e78;
+    }
+
+    .prize-amount {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fbc02d;
+    }
+
+    .quota-info {
+      text-align: center;
+      padding: 12px;
+      background: white;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      font-weight: 600;
+      color: #1f4e78;
+    }
+
+    .bet-info {
+      background: #f0f7ff;
+      border: 1px solid #1565c0;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 1rem;
+      color: #1565c0;
+      font-size: 13px;
+    }
+
+    .bet-info strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        padding: 1rem;
+      }
+
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .tabs {
+        flex-direction: column;
+      }
+
+      table {
+        font-size: 11px;
+      }
+
+      th, td {
+        padding: 6px;
+      }
+
+      .group-selector {
+        gap: 4px;
+      }
+
+      .group-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+
+      .prediction-select {
+        max-width: 100px;
+      }
+
+      .button-group {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>⚽ POLLA MUNDIALISTA 2026</h1>
+    <p id="mode-text">Selecciona una opción para continuar</p>
+  </div>
+
+  <div class="content">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('participante')">👥 Participante</button>
+      <button class="tab-btn" onclick="switchTab('admin')">🔐 Administrador</button>
+    </div>
+
+    <!-- PESTAÑA PARTICIPANTE -->
+    <div id="participante" class="tab-content active">
+      <div class="form-group">
+        <label for="participant-name">Selecciona tu nombre:</label>
+        <select id="participant-name" onchange="loadParticipantData()">
+          <option value="">-- Selecciona tu nombre --</option>
+        </select>
+      </div>
+
+      <div id="participant-panel" class="hidden">
+        <div class="alert alert-info">
+          <strong>📋 Instrucciones:</strong> Predice quién gana o si es empate.
+          <br><strong>⏰ Límite:</strong> Puedes cambiar tu predicción hasta 1 hora antes de que inicie el partido.
+          <br>Acierto = 3 puntos × multiplicador | Fallo = 0 puntos
+        </div>
+
+        <div class="bet-info">
+          <strong>💰 Monto de apuesta (mínimo $10):</strong>
+          <input type="number" id="bet-amount" min="10" step="1" value="10" onchange="updateBetMultiplier()">
+          <div id="bet-multiplier" style="margin-top: 8px; font-size: 12px;">
+            Multiplicador: 1.0x (Puntos base × 1.0)
+          </div>
+        </div>
+
+        <div class="section-title">Selecciona Fase o Grupo</div>
+        <div class="group-selector" id="phase-selector-participant">
+        </div>
+
+        <div id="group-status-participant" class="alert alert-success hidden" style="margin-bottom: 1rem;">
+          🔒 Este grupo está cerrado manualmente. No se pueden realizar modificaciones.
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha y Hora</th>
+                <th style="width: 30%;">Partido</th>
+                <th>Mi Predicción</th>
+                <th>Resultado Real</th>
+                <th style="width: 60px;">Puntos</th>
+              </tr>
+            </thead>
+            <tbody id="participant-matches">
+            </tbody>
+          </table>
+        </div>
+
+        <button class="btn btn-primary" id="save-btn-participant" onclick="showAlert('Predicciones guardadas automáticamente ✓')">💾 Guardar</button>
+
+        <div class="section-title">Ranking Actual</div>
+
+        <div class="prizes-box">
+          <div class="quota-info" id="quota-display">
+            💰 Total recaudado: $130 USD | Apuestas: Mixtas
+          </div>
+          <div class="prizes-title">🏆 Reparto de Premios</div>
+          <div class="prize-item">
+            <span class="prize-position">🥇 1er Lugar</span>
+            <span class="prize-amount" id="prize-1st">$65 USD</span>
+          </div>
+          <div class="prize-item">
+            <span class="prize-position">🥈 2do Lugar</span>
+            <span class="prize-amount" id="prize-2nd">$40 USD</span>
+          </div>
+          <div class="prize-item">
+            <span class="prize-position">🥉 3er Lugar</span>
+            <span class="prize-amount" id="prize-3rd">$25 USD</span>
+          </div>
+        </div>
+
+        <div id="participant-ranking" class="ranking-list">
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑA ADMINISTRADOR -->
+    <div id="admin" class="tab-content">
+      <div class="form-group">
+        <label for="admin-pwd">Contraseña de Administrador:</label>
+        <div class="grid-2">
+          <input type="password" id="admin-pwd" placeholder="Ingresa contraseña" onkeypress="if(event.key==='Enter') validateAdmin()">
+          <button class="btn btn-primary" onclick="validateAdmin()">🔓 Entrar</button>
+        </div>
+      </div>
+
+      <div id="admin-panel" class="hidden">
+        <div class="alert alert-warning">
+          <strong>⚠️ Modo Administrador Activo</strong> - Registra resultados y actualiza rankings
+        </div>
+
+        <div class="section-title">Selecciona Fase o Grupo</div>
+        <div class="group-selector" id="phase-selector-admin">
+        </div>
+
+        <div id="group-status-admin" class="alert alert-success hidden" style="margin-bottom: 1rem;">
+          🔒 Este grupo está cerrado manualmente. No se pueden realizar modificaciones.
+        </div>
+
+        <div class="section-title">Registrar Resultados</div>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha y Hora</th>
+                <th style="width: 30%;">Partido</th>
+                <th>¿Quién ganó?</th>
+              </tr>
+            </thead>
+            <tbody id="admin-matches">
+            </tbody>
+          </table>
+        </div>
+
+        <div class="button-group">
+          <button class="btn btn-danger" id="close-group-btn" onclick="closeCurrentGroup()">🔐 Cerrar Grupo (Manual)</button>
+          <button class="btn btn-primary" id="unlock-group-btn" onclick="unlockCurrentGroup()" style="display:none;">🔓 Desbloquear Grupo</button>
+        </div>
+
+        <div class="section-title">Ranking Completo</div>
+
+        <div class="prizes-box">
+          <div class="quota-info" id="quota-display-admin">
+            💰 Total recaudado: $130 USD | Apuestas: Mixtas
+          </div>
+          <div class="prizes-title">🏆 Reparto de Premios</div>
+          <div class="prize-item">
+            <span class="prize-position">🥇 1er Lugar</span>
+            <span class="prize-amount" id="prize-1st-admin">$65 USD</span>
+          </div>
+          <div class="prize-item">
+            <span class="prize-position">🥈 2do Lugar</span>
+            <span class="prize-amount" id="prize-2nd-admin">$40 USD</span>
+          </div>
+          <div class="prize-item">
+            <span class="prize-position">🥉 3er Lugar</span>
+            <span class="prize-amount" id="prize-3rd-admin">$25 USD</span>
+          </div>
+        </div>
+
+        <div id="admin-ranking" class="ranking-list">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN_PASSWORD = "bde2026";
+const MIN_BET = 10;
+const BASE_POINTS = 3;
+
+const PARTICIPANTS = [
+  "Alvaro Andrade",
+  "Paola Jimenez",
+  "Javier Piedra",
+  "Fernanda",
+  "Lou",
+  "Christian",
+  "Pamela Flores",
+  "Xavier Carrillo",
+  "Carlos Ponton",
+  "Grace Granja",
+  "Diana",
+  "Carlos",
+  "Andrea"
+];
+
+const MATCHES = {
+  "Grupo A": [
+    { id: "A1", date: "2026-06-11", time: "14:00", local: "México", visitante: "Sudáfrica" },
+    { id: "A2", date: "2026-06-11", time: "21:00", local: "Corea del Sur", visitante: "Chequia" },
+    { id: "A3", date: "2026-06-18", time: "12:00", local: "Chequia", visitante: "Sudáfrica" },
+    { id: "A4", date: "2026-06-18", time: "21:00", local: "México", visitante: "Corea del Sur" },
+    { id: "A5", date: "2026-06-24", time: "21:00", local: "Sudáfrica", visitante: "Corea del Sur" },
+    { id: "A6", date: "2026-06-24", time: "21:00", local: "Chequia", visitante: "México" },
+  ],
+  "Grupo B": [
+    { id: "B1", date: "2026-06-12", time: "14:00", local: "Canadá", visitante: "Bosnia y Herzegovina" },
+    { id: "B2", date: "2026-06-12", time: "20:00", local: "Qatar", visitante: "Suiza" },
+    { id: "B3", date: "2026-06-18", time: "12:00", local: "Suiza", visitante: "Bosnia y Herzegovina" },
+    { id: "B4", date: "2026-06-18", time: "17:00", local: "Canadá", visitante: "Qatar" },
+    { id: "B5", date: "2026-06-24", time: "14:00", local: "Suiza", visitante: "Canadá" },
+    { id: "B6", date: "2026-06-24", time: "14:00", local: "Bosnia y Herzegovina", visitante: "Qatar" },
+  ],
+  "Grupo C": [
+    { id: "C1", date: "2026-06-13", time: "17:00", local: "Brasil", visitante: "Marruecos" },
+    { id: "C2", date: "2026-06-13", time: "20:00", local: "Haití", visitante: "Escocia" },
+    { id: "C3", date: "2026-06-19", time: "17:00", local: "Escocia", visitante: "Marruecos" },
+    { id: "C4", date: "2026-06-19", time: "19:30", local: "Brasil", visitante: "Haití" },
+    { id: "C5", date: "2026-06-24", time: "17:00", local: "Marruecos", visitante: "Haití" },
+    { id: "C6", date: "2026-06-24", time: "17:00", local: "Escocia", visitante: "Brasil" },
+  ],
+  "Grupo D": [
+    { id: "D1", date: "2026-06-12", time: "20:00", local: "Estados Unidos", visitante: "Paraguay" },
+    { id: "D2", date: "2026-06-13", time: "23:00", local: "Australia", visitante: "Turquía" },
+    { id: "D3", date: "2026-06-19", time: "14:00", local: "Estados Unidos", visitante: "Australia" },
+    { id: "D4", date: "2026-06-19", time: "22:00", local: "Turquía", visitante: "Paraguay" },
+    { id: "D5", date: "2026-06-25", time: "21:00", local: "Turquía", visitante: "Estados Unidos" },
+    { id: "D6", date: "2026-06-25", time: "21:00", local: "Paraguay", visitante: "Australia" },
+  ],
+  "Grupo E": [
+    { id: "E1", date: "2026-06-14", time: "12:00", local: "Alemania", visitante: "Curaçao" },
+    { id: "E2", date: "2026-06-14", time: "18:00", local: "Costa de Marfil", visitante: "Ecuador" },
+    { id: "E3", date: "2026-06-20", time: "15:00", local: "Alemania", visitante: "Costa de Marfil" },
+    { id: "E4", date: "2026-06-20", time: "19:00", local: "Ecuador", visitante: "Curaçao" },
+    { id: "E5", date: "2026-06-25", time: "15:00", local: "Curaçao", visitante: "Costa de Marfil" },
+    { id: "E6", date: "2026-06-25", time: "15:00", local: "Ecuador", visitante: "Alemania" },
+  ],
+  "Grupo F": [
+    { id: "F1", date: "2026-06-14", time: "15:00", local: "Países Bajos", visitante: "Japón" },
+    { id: "F2", date: "2026-06-14", time: "21:00", local: "Suecia", visitante: "Túnez" },
+    { id: "F3", date: "2026-06-20", time: "12:00", local: "Países Bajos", visitante: "Suecia" },
+    { id: "F4", date: "2026-06-20", time: "19:00", local: "Túnez", visitante: "Japón" },
+    { id: "F5", date: "2026-06-25", time: "18:00", local: "Túnez", visitante: "Países Bajos" },
+    { id: "F6", date: "2026-06-25", time: "18:00", local: "Japón", visitante: "Suecia" },
+  ],
+  "Grupo G": [
+    { id: "G1", date: "2026-06-15", time: "11:00", local: "Bélgica", visitante: "Egipto" },
+    { id: "G2", date: "2026-06-15", time: "14:00", local: "Irán", visitante: "Nueva Zelanda" },
+    { id: "G3", date: "2026-06-21", time: "14:00", local: "Bélgica", visitante: "Irán" },
+    { id: "G4", date: "2026-06-21", time: "14:00", local: "Nueva Zelanda", visitante: "Egipto" },
+    { id: "G5", date: "2026-06-26", time: "22:00", local: "Nueva Zelanda", visitante: "Bélgica" },
+    { id: "G6", date: "2026-06-26", time: "22:00", local: "Egipto", visitante: "Irán" },
+  ],
+  "Grupo H": [
+    { id: "H1", date: "2026-06-15", time: "11:00", local: "España", visitante: "Cabo Verde" },
+    { id: "H2", date: "2026-06-15", time: "17:00", local: "Arabia Saudita", visitante: "Uruguay" },
+    { id: "H3", date: "2026-06-21", time: "11:00", local: "España", visitante: "Arabia Saudita" },
+    { id: "H4", date: "2026-06-21", time: "17:00", local: "Uruguay", visitante: "Cabo Verde" },
+    { id: "H5", date: "2026-06-26", time: "19:00", local: "Cabo Verde", visitante: "Arabia Saudita" },
+    { id: "H6", date: "2026-06-26", time: "19:00", local: "Uruguay", visitante: "España" },
+  ],
+  "Grupo I": [
+    { id: "I1", date: "2026-06-16", time: "14:00", local: "Francia", visitante: "Senegal" },
+    { id: "I2", date: "2026-06-16", time: "17:00", local: "Irak", visitante: "Noruega" },
+    { id: "I3", date: "2026-06-22", time: "16:00", local: "Francia", visitante: "Irak" },
+    { id: "I4", date: "2026-06-22", time: "19:00", local: "Noruega", visitante: "Senegal" },
+    { id: "I5", date: "2026-06-26", time: "14:00", local: "Noruega", visitante: "Francia" },
+    { id: "I6", date: "2026-06-26", time: "14:00", local: "Senegal", visitante: "Irak" },
+  ],
+  "Grupo J": [
+    { id: "J1", date: "2026-06-16", time: "20:00", local: "Argentina", visitante: "Argelia" },
+    { id: "J2", date: "2026-06-16", time: "23:00", local: "Austria", visitante: "Jordania" },
+    { id: "J3", date: "2026-06-22", time: "12:00", local: "Argentina", visitante: "Austria" },
+    { id: "J4", date: "2026-06-22", time: "22:00", local: "Jordania", visitante: "Argelia" },
+    { id: "J5", date: "2026-06-27", time: "21:00", local: "Argelia", visitante: "Austria" },
+    { id: "J6", date: "2026-06-27", time: "21:00", local: "Jordania", visitante: "Argentina" },
+  ],
+  "Grupo K": [
+    { id: "K1", date: "2026-06-17", time: "12:00", local: "Portugal", visitante: "RD Congo" },
+    { id: "K2", date: "2026-06-17", time: "21:00", local: "Uzbekistán", visitante: "Colombia" },
+    { id: "K3", date: "2026-06-23", time: "12:00", local: "Portugal", visitante: "Uzbekistán" },
+    { id: "K4", date: "2026-06-23", time: "21:00", local: "Colombia", visitante: "RD Congo" },
+    { id: "K5", date: "2026-06-27", time: "18:30", local: "Colombia", visitante: "Portugal" },
+    { id: "K6", date: "2026-06-27", time: "18:30", local: "RD Congo", visitante: "Uzbekistán" },
+  ],
+  "Grupo L": [
+    { id: "L1", date: "2026-06-17", time: "18:00", local: "Inglaterra", visitante: "Croacia" },
+    { id: "L2", date: "2026-06-17", time: "18:00", local: "Ghana", visitante: "Panamá" },
+    { id: "L3", date: "2026-06-23", time: "15:00", local: "Inglaterra", visitante: "Ghana" },
+    { id: "L4", date: "2026-06-23", time: "18:00", local: "Panamá", visitante: "Croacia" },
+    { id: "L5", date: "2026-06-27", time: "16:00", local: "Panamá", visitante: "Inglaterra" },
+    { id: "L6", date: "2026-06-27", time: "16:00", local: "Croacia", visitante: "Ghana" },
+  ],
+};
+
+const PHASES = ["Grupo A", "Grupo B", "Grupo C", "Grupo D", "Grupo E", "Grupo F", "Grupo G", "Grupo H", "Grupo I", "Grupo J", "Grupo K", "Grupo L"];
+
+let currentPhase = "Grupo A";
+let updateInterval = null;
+
+function initStorage() {
+  if (!localStorage.getItem('polla_predictions')) {
+    const pred = {};
+    PARTICIPANTS.forEach(p => {
+      pred[p] = {};
+      Object.values(MATCHES).forEach(matches => {
+        matches.forEach(m => {
+          pred[p][m.id] = '';
+        });
+      });
+    });
+    localStorage.setItem('polla_predictions', JSON.stringify(pred));
+  }
+  if (!localStorage.getItem('polla_results')) {
+    const res = {};
+    Object.values(MATCHES).forEach(matches => {
+      matches.forEach(m => {
+        res[m.id] = '';
+      });
+    });
+    localStorage.setItem('polla_results', JSON.stringify(res));
+  }
+  if (!localStorage.getItem('polla_bets')) {
+    const bets = {};
+    PARTICIPANTS.forEach(p => {
+      bets[p] = MIN_BET;
+    });
+    localStorage.setItem('polla_bets', JSON.stringify(bets));
+  }
+  if (!localStorage.getItem('polla_closed_groups')) {
+    localStorage.setItem('polla_closed_groups', JSON.stringify([]));
+  }
+}
+
+function getMatchDateTime(match) {
+  return new Date(`${match.date}T${match.time}:00`);
+}
+
+function isMatchLocked(match) {
+  const matchTime = getMatchDateTime(match);
+  const now = new Date();
+  const oneHourBefore = new Date(matchTime.getTime() - 60 * 60 * 1000);
+  return now >= oneHourBefore;
+}
+
+function getCountdown(match) {
+  const matchTime = getMatchDateTime(match);
+  const now = new Date();
+  const oneHourBefore = new Date(matchTime.getTime() - 60 * 60 * 1000);
+  
+  if (now >= oneHourBefore) {
+    return "🔒 CERRADO";
+  }
+  
+  const diff = oneHourBefore - now;
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  
+  if (hours > 0) {
+    return `⏰ ${hours}h ${minutes}m`;
+  }
+  return `⏰ ${minutes}m`;
+}
+
+function isGroupClosed(groupName) {
+  const closed = JSON.parse(localStorage.getItem('polla_closed_groups') || '[]');
+  return closed.includes(groupName);
+}
+
+function closeCurrentGroup() {
+  const closed = JSON.parse(localStorage.getItem('polla_closed_groups') || '[]');
+  if (!closed.includes(currentPhase)) {
+    closed.push(currentPhase);
+    localStorage.setItem('polla_closed_groups', JSON.stringify(closed));
+    showAlert(`✓ ${currentPhase} ha sido cerrado correctamente`);
+    loadAdminPanel();
+    renderPhaseSelector('admin');
+  }
+}
+
+function unlockCurrentGroup() {
+  const closed = JSON.parse(localStorage.getItem('polla_closed_groups') || '[]');
+  const index = closed.indexOf(currentPhase);
+  if (index > -1) {
+    closed.splice(index, 1);
+    localStorage.setItem('polla_closed_groups', JSON.stringify(closed));
+    showAlert(`✓ ${currentPhase} ha sido desbloqueado`);
+    loadAdminPanel();
+    renderPhaseSelector('admin');
+  }
+}
+
+function updateBetMultiplier() {
+  const betAmount = parseFloat(document.getElementById('bet-amount').value) || MIN_BET;
+  if (betAmount < MIN_BET) {
+    document.getElementById('bet-amount').value = MIN_BET;
+    return;
+  }
+  const multiplier = (betAmount / MIN_BET).toFixed(1);
+  document.getElementById('bet-multiplier').textContent = 
+    `Multiplicador: ${multiplier}x (Puntos base × ${multiplier})`;
+  
+  const currentParticipant = document.getElementById('participant-name').value;
+  if (currentParticipant) {
+    const bets = JSON.parse(localStorage.getItem('polla_bets') || '{}');
+    bets[currentParticipant] = betAmount;
+    localStorage.setItem('polla_bets', JSON.stringify(bets));
+    loadParticipantData();
+  }
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  
+  document.getElementById(tab).classList.add('active');
+  event.target.classList.add('active');
+  
+  if (tab === 'participante') {
+    document.getElementById('mode-text').textContent = 'Modo: Participante';
+    loadParticipantDropdown();
+    renderPhaseSelector('participant');
+    startAutoUpdate('participant');
+  } else {
+    document.getElementById('mode-text').textContent = 'Modo: Administrador';
+    renderPhaseSelector('admin');
+    startAutoUpdate('admin');
+  }
+}
+
+function startAutoUpdate(mode) {
+  if (updateInterval) clearInterval(updateInterval);
+  updateInterval = setInterval(() => {
+    if (mode === 'participant') {
+      loadParticipantData();
+    } else {
+      loadAdminPanel();
+    }
+  }, 60000);
+}
+
+function renderPhaseSelector(mode) {
+  const selector = document.getElementById(`phase-selector-${mode}`);
+  selector.innerHTML = '';
+  
+  PHASES.forEach(phase => {
+    const btn = document.createElement('button');
+    btn.className = `group-btn ${phase === currentPhase ? 'active' : ''}`;
+    if (isGroupClosed(phase)) {
+      btn.classList.add('locked');
+    }
+    btn.textContent = phase;
+    btn.onclick = () => selectPhase(phase, mode);
+    selector.appendChild(btn);
+  });
+}
+
+function selectPhase(phase, mode) {
+  currentPhase = phase;
+  renderPhaseSelector(mode);
+  
+  if (mode === 'participant') {
+    loadParticipantData();
+  } else {
+    loadAdminPanel();
+  }
+}
+
+function loadParticipantDropdown() {
+  const select = document.getElementById('participant-name');
+  select.innerHTML = '<option value="">-- Selecciona tu nombre --</option>';
+  PARTICIPANTS.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p;
+    opt.textContent = p;
+    select.appendChild(opt);
+  });
+}
+
+function calculateScore(prediction, result, multiplier) {
+  if (!prediction || !result) return 0;
+  if (prediction === result) return BASE_POINTS * multiplier;
+  return 0;
+}
+
+function getTotalBet() {
+  const bets = JSON.parse(localStorage.getItem('polla_bets') || '{}');
+  let total = 0;
+  PARTICIPANTS.forEach(p => {
+    total += (bets[p] || MIN_BET);
+  });
+  return total;
+}
+
+function calculateProportionalPrize(participantBet, totalBet, prizePosition) {
+  if (totalBet === 0) return 0;
+  
+  // Montos fijos originales
+  const ORIGINAL_PRIZES = { first: 65, second: 40, third: 25 };
+  const ORIGINAL_TOTAL = 130; // 13 personas × $10
+  
+  // Escalar el premio según total actual
+  const scale = totalBet / ORIGINAL_TOTAL;
+  let prizeAmount = 0;
+  
+  if (prizePosition === 1) {
+    prizeAmount = ORIGINAL_PRIZES.first * scale;
+  } else if (prizePosition === 2) {
+    prizeAmount = ORIGINAL_PRIZES.second * scale;
+  } else if (prizePosition === 3) {
+    prizeAmount = ORIGINAL_PRIZES.third * scale;
+  }
+  
+  // Distribuir el premio proporcionalmente a la apuesta del ganador
+  const betRatio = participantBet / totalBet;
+  return betRatio * prizeAmount;
+}
+
+function updatePrizes() {
+  const totalBet = getTotalBet();
+  
+  // Montos fijos originales y su total base
+  const ORIGINAL_PRIZES = { first: 65, second: 40, third: 25 };
+  const ORIGINAL_TOTAL = 130; // 13 personas × $10
+  
+  // Escalar los premios proporcionalmente
+  const scale = totalBet / ORIGINAL_TOTAL;
+  const prize1st = (ORIGINAL_PRIZES.first * scale).toFixed(2);
+  const prize2nd = (ORIGINAL_PRIZES.second * scale).toFixed(2);
+  const prize3rd = (ORIGINAL_PRIZES.third * scale).toFixed(2);
+  
+  // Mostrar el total recaudado
+  document.getElementById('quota-display').textContent = 
+    `💰 Total recaudado: $${totalBet.toFixed(2)} USD (Apuesta base: $10 × 13 personas)`;
+  document.getElementById('quota-display-admin').textContent = 
+    `💰 Total recaudado: $${totalBet.toFixed(2)} USD (Apuesta base: $10 × 13 personas)`;
+  
+  // Los premios escalados proporcionalmente
+  document.getElementById('prize-1st').textContent = `$${prize1st} USD`;
+  document.getElementById('prize-2nd').textContent = `$${prize2nd} USD`;
+  document.getElementById('prize-3rd').textContent = `$${prize3rd} USD`;
+  
+  document.getElementById('prize-1st-admin').textContent = `$${prize1st} USD`;
+  document.getElementById('prize-2nd-admin').textContent = `$${prize2nd} USD`;
+  document.getElementById('prize-3rd-admin').textContent = `$${prize3rd} USD`;
+}
+
+function loadParticipantData() {
+  const name = document.getElementById('participant-name').value;
+  const panel = document.getElementById('participant-panel');
+  
+  if (!name) {
+    panel.classList.add('hidden');
+    return;
+  }
+  
+  panel.classList.remove('hidden');
+  
+  const bets = JSON.parse(localStorage.getItem('polla_bets') || '{}');
+  const betAmount = bets[name] || MIN_BET;
+  const multiplier = betAmount / MIN_BET;
+  
+  document.getElementById('bet-amount').value = betAmount;
+  document.getElementById('bet-multiplier').textContent = 
+    `Multiplicador: ${multiplier.toFixed(1)}x (Puntos base × ${multiplier.toFixed(1)})`;
+  
+  updatePrizes();
+  
+  const predictions = JSON.parse(localStorage.getItem('polla_predictions') || '{}');
+  const results = JSON.parse(localStorage.getItem('polla_results') || '{}');
+  const matches = MATCHES[currentPhase] || [];
+  const manualClosed = isGroupClosed(currentPhase);
+  
+  const statusAlert = document.getElementById('group-status-participant');
+  if (manualClosed) {
+    statusAlert.classList.remove('hidden');
+  } else {
+    statusAlert.classList.add('hidden');
+  }
+  
+  let html = '';
+  matches.forEach(m => {
+    const pred = predictions[name]?.[m.id] || '';
+    const result = results[m.id] || '';
+    const score = calculateScore(pred, result, multiplier);
+    const locked = isMatchLocked(m);
+    const countdown = getCountdown(m);
+    
+    const resultText = result === 'L' ? m.local : result === 'V' ? m.visitante : result === 'E' ? 'Empate' : '-';
+    const disabled = locked || manualClosed;
+    
+    html += `<tr ${locked ? 'class="closing-soon"' : ''}>
+      <td>
+        <strong>${m.date}</strong>
+        <div class="match-time">${m.time}</div>
+        <div class="countdown">${countdown}</div>
+      </td>
+      <td class="match-cell">
+        <div class="match-teams">${m.local} vs ${m.visitante}</div>
+      </td>
+      <td>
+        <select class="prediction-select" onchange="savePrediction('${name}', '${m.id}', this.value)" ${disabled ? 'disabled' : ''}>
+          <option value="">--</option>
+          <option value="L" ${pred === 'L' ? 'selected' : ''}>${m.local} ⭐</option>
+          <option value="V" ${pred === 'V' ? 'selected' : ''}>${m.visitante} ⭐</option>
+          <option value="E" ${pred === 'E' ? 'selected' : ''}>Empate 🤝</option>
+        </select>
+      </td>
+      <td>${resultText}</td>
+      <td style="font-weight: 600; color: #1f4e78; text-align: center;">${score.toFixed(1)}</td>
+    </tr>`;
+  });
+  
+  document.getElementById('participant-matches').innerHTML = html;
+  document.getElementById('save-btn-participant').disabled = manualClosed;
+  updateRanking('participant', name);
+}
+
+function savePrediction(name, matchId, value) {
+  const match = Object.values(MATCHES).flat().find(m => m.id === matchId);
+  if (isMatchLocked(match)) {
+    showAlert('⏰ No se puede modificar: El partido inicia en menos de 1 hora');
+    return;
+  }
+  if (isGroupClosed(currentPhase)) {
+    showAlert('🔒 No se pueden modificar predicciones en un grupo cerrado');
+    return;
+  }
+  const predictions = JSON.parse(localStorage.getItem('polla_predictions') || '{}');
+  if (!predictions[name]) predictions[name] = {};
+  predictions[name][matchId] = value;
+  localStorage.setItem('polla_predictions', JSON.stringify(predictions));
+  loadParticipantData();
+}
+
+function validateAdmin() {
+  const pwd = document.getElementById('admin-pwd').value;
+  if (pwd === ADMIN_PASSWORD) {
+    document.getElementById('admin-pwd').parentElement.classList.add('hidden');
+    document.getElementById('admin-panel').classList.remove('hidden');
+    renderPhaseSelector('admin');
+    loadAdminPanel();
+    showAlert('Acceso concedido ✓');
+  } else if (pwd) {
+    showAlert('Contraseña incorrecta ✗');
+  }
+}
+
+function loadAdminPanel() {
+  updatePrizes();
+  
+  const results = JSON.parse(localStorage.getItem('polla_results') || '{}');
+  const matches = MATCHES[currentPhase] || [];
+  const manualClosed = isGroupClosed(currentPhase);
+  
+  const statusAlert = document.getElementById('group-status-admin');
+  if (manualClosed) {
+    statusAlert.classList.remove('hidden');
+  } else {
+    statusAlert.classList.add('hidden');
+  }
+  
+  document.getElementById('close-group-btn').style.display = manualClosed ? 'none' : 'inline-block';
+  document.getElementById('unlock-group-btn').style.display = manualClosed ? 'inline-block' : 'none';
+  
+  let html = '';
+  matches.forEach(m => {
+    const result = results[m.id] || '';
+    const locked = isMatchLocked(m);
+    const countdown = getCountdown(m);
+    const disabled = manualClosed;
+    
+    html += `<tr ${locked || manualClosed ? 'class="locked"' : ''}>
+      <td>
+        <strong>${m.date}</strong>
+        <div class="match-time">${m.time}</div>
+        <div class="countdown">${countdown}</div>
+      </td>
+      <td class="match-cell">
+        <div class="match-teams">${m.local} vs ${m.visitante}</div>
+      </td>
+      <td>
+        <select class="prediction-select" onchange="saveResult('${m.id}', this.value)" ${disabled ? 'disabled' : ''}>
+          <option value="">--</option>
+          <option value="L" ${result === 'L' ? 'selected' : ''}>${m.local} ⭐</option>
+          <option value="V" ${result === 'V' ? 'selected' : ''}>${m.visitante} ⭐</option>
+          <option value="E" ${result === 'E' ? 'selected' : ''}>Empate 🤝</option>
+        </select>
+        ${result ? '<span class="lock-icon">✓</span>' : ''}
+      </td>
+    </tr>`;
+  });
+  
+  document.getElementById('admin-matches').innerHTML = html;
+  updateRanking('admin');
+}
+
+function saveResult(matchId, value) {
+  if (isGroupClosed(currentPhase)) {
+    showAlert('🔒 No se pueden modificar resultados en un grupo cerrado');
+    return;
+  }
+  const results = JSON.parse(localStorage.getItem('polla_results') || '{}');
+  results[matchId] = value;
+  localStorage.setItem('polla_results', JSON.stringify(results));
+  loadAdminPanel();
+}
+
+function updateRanking(mode, currentParticipant = null) {
+  const predictions = JSON.parse(localStorage.getItem('polla_predictions') || '{}');
+  const results = JSON.parse(localStorage.getItem('polla_results') || '{}');
+  const bets = JSON.parse(localStorage.getItem('polla_bets') || '{}');
+  const totalBet = getTotalBet();
+  
+  const scores = {};
+  PARTICIPANTS.forEach(p => {
+    let total = 0;
+    const multiplier = (bets[p] || MIN_BET) / MIN_BET;
+    Object.values(MATCHES).forEach(matches => {
+      matches.forEach(m => {
+        const pred = predictions[p]?.[m.id] || '';
+        const result = results[m.id] || '';
+        total += calculateScore(pred, result, multiplier);
+      });
+    });
+    scores[p] = total;
+  });
+  
+  const ranking = Object.entries(scores)
+    .sort((a, b) => b[1] - a[1])
+    .map((entry, idx) => ({ 
+      name: entry[0], 
+      score: entry[1], 
+      pos: idx + 1, 
+      bet: bets[entry[0]] || MIN_BET 
+    }));
+  
+  let html = '';
+  ranking.forEach(item => {
+    const classes = ['ranking-item'];
+    if (item.pos === 1) classes.push('first');
+    if (item.pos === 2) classes.push('second');
+    if (item.pos === 3) classes.push('third');
+    if (item.name === currentParticipant) classes.push('highlight');
+    
+    // Calcular premio proporcional
+    let prizeText = '';
+    if (item.pos === 1) {
+      const prize = calculateProportionalPrize(item.bet, totalBet, 1);
+      prizeText = ` → Gana: $${prize.toFixed(2)}`;
+    } else if (item.pos === 2) {
+      const prize = calculateProportionalPrize(item.bet, totalBet, 2);
+      prizeText = ` → Gana: $${prize.toFixed(2)}`;
+    } else if (item.pos === 3) {
+      const prize = calculateProportionalPrize(item.bet, totalBet, 3);
+      prizeText = ` → Gana: $${prize.toFixed(2)}`;
+    }
+    
+    html += `<div class="${classes.join(' ')}">
+      <div class="ranking-position">${item.pos}</div>
+      <div class="ranking-name">
+        ${item.name}
+        <div class="ranking-info" style="font-size: 11px; color: #999; margin-top: 2px;">Apuesta: $${item.bet}${prizeText}</div>
+      </div>
+      <div class="ranking-score">${item.score.toFixed(1)} pts</div>
+    </div>`;
+  });
+  
+  if (mode === 'participant') {
+    document.getElementById('participant-ranking').innerHTML = html;
+  } else {
+    document.getElementById('admin-ranking').innerHTML = html;
+  }
+}
+
+function showAlert(message) {
+  alert(message);
+}
+
+initStorage();
+</script>
+
+</body>
+</html>
