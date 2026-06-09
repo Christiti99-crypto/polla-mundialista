@@ -47,6 +47,12 @@
       padding: 2rem;
     }
 
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #666;
+    }
+
     .tabs {
       display: flex;
       gap: 8px;
@@ -168,6 +174,7 @@
       cursor: pointer;
       transition: all 0.2s;
       margin-right: 8px;
+      margin-bottom: 8px;
     }
 
     .btn-primary {
@@ -177,6 +184,15 @@
 
     .btn-primary:hover {
       background: #163a5a;
+    }
+
+    .btn-success {
+      background: #28a745;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #218838;
     }
 
     .btn-danger {
@@ -219,6 +235,12 @@
       border-left: 4px solid #2e7d32;
     }
 
+    .alert-danger {
+      background: #ffebee;
+      color: #c62828;
+      border-left: 4px solid #c62828;
+    }
+
     .table-responsive {
       overflow-x: auto;
       margin-bottom: 1.5rem;
@@ -252,10 +274,6 @@
       background: #f0f8f5;
     }
 
-    tr.closing-soon {
-      background: #fff3cd;
-    }
-
     .match-cell {
       font-size: 12px;
       color: #666;
@@ -278,12 +296,6 @@
       color: #dc3545;
       font-weight: 600;
       margin-top: 2px;
-    }
-
-    .lock-icon {
-      color: #28a745;
-      font-weight: bold;
-      margin-left: 4px;
     }
 
     .ranking-list {
@@ -346,8 +358,9 @@
     }
 
     .ranking-info {
-      font-size: 12px;
-      color: #666;
+      font-size: 11px;
+      color: #999;
+      margin-top: 3px;
     }
 
     .ranking-score {
@@ -356,6 +369,25 @@
       color: #1f4e78;
       min-width: 80px;
       text-align: right;
+    }
+
+    .payment-badge {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 4px;
+    }
+
+    .payment-paid {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .payment-pending {
+      background: #fff3cd;
+      color: #856404;
     }
 
     .hidden {
@@ -381,13 +413,6 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .button-group {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
       margin-bottom: 1rem;
     }
 
@@ -450,9 +475,37 @@
       font-size: 13px;
     }
 
-    .bet-info strong {
-      display: block;
-      margin-bottom: 6px;
+    .payments-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1rem;
+    }
+
+    .payments-table th {
+      background: #f5f5f5;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      border-bottom: 2px solid #ddd;
+    }
+
+    .payments-table td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .payments-table tr:hover {
+      background: #fafafa;
+    }
+
+    .checkbox-cell {
+      text-align: center;
+    }
+
+    .checkbox-cell input {
+      width: auto;
+      cursor: pointer;
     }
 
     @media (max-width: 768px) {
@@ -489,12 +542,9 @@
         max-width: 100px;
       }
 
-      .button-group {
-        flex-direction: column;
-      }
-
       .btn {
         width: 100%;
+        margin-right: 0;
       }
     }
   </style>
@@ -504,156 +554,162 @@
 <div class="container">
   <div class="header">
     <h1>⚽ POLLA MUNDIALISTA 2026</h1>
-    <p id="mode-text">Selecciona una opción para continuar</p>
+    <p id="mode-text">Cargando...</p>
   </div>
 
   <div class="content">
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('participante')">👥 Participante</button>
-      <button class="tab-btn" onclick="switchTab('admin')">🔐 Administrador</button>
+    <div id="loading" class="loading">
+      ⏳ Cargando datos desde GitHub...
     </div>
 
-    <!-- PESTAÑA PARTICIPANTE -->
-    <div id="participante" class="tab-content active">
-      <div class="form-group">
-        <label for="participant-name">Selecciona tu nombre:</label>
-        <select id="participant-name" onchange="loadParticipantData()">
-          <option value="">-- Selecciona tu nombre --</option>
-        </select>
+    <div id="main-content" class="hidden">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('participante')">👥 Participante</button>
+        <button class="tab-btn" onclick="switchTab('admin')">🔐 Administrador</button>
       </div>
 
-      <div id="participant-panel" class="hidden">
-        <div class="alert alert-info">
-          <strong>📋 Instrucciones:</strong> Predice quién gana o si es empate.
-          <br><strong>⏰ Límite:</strong> Puedes cambiar tu predicción hasta 1 hora antes de que inicie el partido.
-          <br>Acierto = 3 puntos × multiplicador | Fallo = 0 puntos
+      <!-- PESTAÑA PARTICIPANTE -->
+      <div id="participante" class="tab-content active">
+        <div class="form-group">
+          <label for="participant-name">Selecciona tu nombre:</label>
+          <select id="participant-name" onchange="loadParticipantData()">
+            <option value="">-- Selecciona tu nombre --</option>
+          </select>
         </div>
 
-        <div class="bet-info">
-          <strong>💰 Monto de apuesta (mínimo $10):</strong>
-          <input type="number" id="bet-amount" min="10" step="1" value="10" onchange="updateBetMultiplier()">
-          <div id="bet-multiplier" style="margin-top: 8px; font-size: 12px;">
-            Multiplicador: 1.0x (Puntos base × 1.0)
+        <div id="participant-panel" class="hidden">
+          <div class="alert alert-info">
+            <strong>📋 Instrucciones:</strong> Predice quién gana o si es empate.
+            <br><strong>⏰ Límite:</strong> Puedes cambiar tu predicción hasta 1 hora antes.
+            <br>Acierto = 3 puntos × multiplicador | Fallo = 0 puntos
           </div>
-        </div>
 
-        <div class="section-title">Selecciona Fase o Grupo</div>
-        <div class="group-selector" id="phase-selector-participant">
-        </div>
-
-        <div id="group-status-participant" class="alert alert-success hidden" style="margin-bottom: 1rem;">
-          🔒 Este grupo está cerrado manualmente. No se pueden realizar modificaciones.
-        </div>
-
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Fecha y Hora</th>
-                <th style="width: 30%;">Partido</th>
-                <th>Mi Predicción</th>
-                <th>Resultado Real</th>
-                <th style="width: 60px;">Puntos</th>
-              </tr>
-            </thead>
-            <tbody id="participant-matches">
-            </tbody>
-          </table>
-        </div>
-
-        <button class="btn btn-primary" id="save-btn-participant" onclick="showAlert('Predicciones guardadas automáticamente ✓')">💾 Guardar</button>
-
-        <div class="section-title">Ranking Actual</div>
-
-        <div class="prizes-box">
-          <div class="quota-info" id="quota-display">
-            💰 Total recaudado: $130 USD | Apuestas: Mixtas
+          <div class="bet-info">
+            <strong>💰 Monto de apuesta (mínimo $10):</strong>
+            <input type="number" id="bet-amount" min="10" step="1" value="10" onchange="updateBetMultiplier()">
+            <div id="bet-multiplier" style="margin-top: 8px; font-size: 12px;">
+              Multiplicador: 1.0x (Puntos base × 1.0)
+            </div>
           </div>
-          <div class="prizes-title">🏆 Reparto de Premios</div>
-          <div class="prize-item">
-            <span class="prize-position">🥇 1er Lugar</span>
-            <span class="prize-amount" id="prize-1st">$65 USD</span>
-          </div>
-          <div class="prize-item">
-            <span class="prize-position">🥈 2do Lugar</span>
-            <span class="prize-amount" id="prize-2nd">$40 USD</span>
-          </div>
-          <div class="prize-item">
-            <span class="prize-position">🥉 3er Lugar</span>
-            <span class="prize-amount" id="prize-3rd">$25 USD</span>
-          </div>
-        </div>
 
-        <div id="participant-ranking" class="ranking-list">
-        </div>
-      </div>
-    </div>
+          <div class="section-title">Selecciona Fase o Grupo</div>
+          <div class="group-selector" id="phase-selector-participant"></div>
 
-    <!-- PESTAÑA ADMINISTRADOR -->
-    <div id="admin" class="tab-content">
-      <div class="form-group">
-        <label for="admin-pwd">Contraseña de Administrador:</label>
-        <div class="grid-2">
-          <input type="password" id="admin-pwd" placeholder="Ingresa contraseña" onkeypress="if(event.key==='Enter') validateAdmin()">
-          <button class="btn btn-primary" onclick="validateAdmin()">🔓 Entrar</button>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha y Hora</th>
+                  <th style="width: 30%;">Partido</th>
+                  <th>Mi Predicción</th>
+                  <th>Resultado Real</th>
+                  <th style="width: 60px;">Puntos</th>
+                </tr>
+              </thead>
+              <tbody id="participant-matches"></tbody>
+            </table>
+          </div>
+
+          <button class="btn btn-success" onclick="saveToGitHub()">💾 Guardar en GitHub</button>
+
+          <div class="section-title">Ranking Actual</div>
+
+          <div class="prizes-box">
+            <div class="quota-info" id="quota-display">
+              💰 Total recaudado: $130 USD
+            </div>
+            <div class="prizes-title">🏆 Reparto de Premios</div>
+            <div class="prize-item">
+              <span class="prize-position">🥇 1er Lugar</span>
+              <span class="prize-amount" id="prize-1st">$65 USD</span>
+            </div>
+            <div class="prize-item">
+              <span class="prize-position">🥈 2do Lugar</span>
+              <span class="prize-amount" id="prize-2nd">$40 USD</span>
+            </div>
+            <div class="prize-item">
+              <span class="prize-position">🥉 3er Lugar</span>
+              <span class="prize-amount" id="prize-3rd">$25 USD</span>
+            </div>
+          </div>
+
+          <div id="participant-ranking" class="ranking-list"></div>
         </div>
       </div>
 
-      <div id="admin-panel" class="hidden">
-        <div class="alert alert-warning">
-          <strong>⚠️ Modo Administrador Activo</strong> - Registra resultados y actualiza rankings
+      <!-- PESTAÑA ADMINISTRADOR -->
+      <div id="admin" class="tab-content">
+        <div class="form-group">
+          <label for="admin-pwd">Contraseña de Administrador:</label>
+          <div class="grid-2">
+            <input type="password" id="admin-pwd" placeholder="Ingresa contraseña" onkeypress="if(event.key==='Enter') validateAdmin()">
+            <button class="btn btn-primary" onclick="validateAdmin()">🔓 Entrar</button>
+          </div>
         </div>
 
-        <div class="section-title">Selecciona Fase o Grupo</div>
-        <div class="group-selector" id="phase-selector-admin">
-        </div>
+        <div id="admin-panel" class="hidden">
+          <div class="alert alert-warning">
+            <strong>⚠️ Modo Administrador Activo</strong>
+          </div>
 
-        <div id="group-status-admin" class="alert alert-success hidden" style="margin-bottom: 1rem;">
-          🔒 Este grupo está cerrado manualmente. No se pueden realizar modificaciones.
-        </div>
+          <div class="section-title">📋 Gestión de Pagos</div>
+          <div class="table-responsive">
+            <table class="payments-table">
+              <thead>
+                <tr>
+                  <th>Participante</th>
+                  <th>Apuesta</th>
+                  <th style="text-align: center;">¿Pagó?</th>
+                </tr>
+              </thead>
+              <tbody id="payments-table"></tbody>
+            </table>
+          </div>
+          <button class="btn btn-success" onclick="savePaymentsToGitHub()">💾 Guardar Pagos</button>
 
-        <div class="section-title">Registrar Resultados</div>
-        <div class="table-responsive">
-          <table>
-            <thead>
-              <tr>
-                <th>Fecha y Hora</th>
-                <th style="width: 30%;">Partido</th>
-                <th>¿Quién ganó?</th>
-              </tr>
-            </thead>
-            <tbody id="admin-matches">
-            </tbody>
-          </table>
-        </div>
+          <div class="section-title">Selecciona Fase o Grupo</div>
+          <div class="group-selector" id="phase-selector-admin"></div>
 
-        <div class="button-group">
-          <button class="btn btn-danger" id="close-group-btn" onclick="closeCurrentGroup()">🔐 Cerrar Grupo (Manual)</button>
+          <div class="section-title">Registrar Resultados</div>
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Fecha y Hora</th>
+                  <th style="width: 30%;">Partido</th>
+                  <th>¿Quién ganó?</th>
+                </tr>
+              </thead>
+              <tbody id="admin-matches"></tbody>
+            </table>
+          </div>
+
+          <button class="btn btn-danger" id="close-group-btn" onclick="closeCurrentGroup()">🔐 Cerrar Grupo</button>
           <button class="btn btn-primary" id="unlock-group-btn" onclick="unlockCurrentGroup()" style="display:none;">🔓 Desbloquear Grupo</button>
-        </div>
+          <button class="btn btn-success" onclick="saveToGitHub()">💾 Guardar Resultados</button>
 
-        <div class="section-title">Ranking Completo</div>
+          <div class="section-title">Ranking Completo</div>
 
-        <div class="prizes-box">
-          <div class="quota-info" id="quota-display-admin">
-            💰 Total recaudado: $130 USD | Apuestas: Mixtas
+          <div class="prizes-box">
+            <div class="quota-info" id="quota-display-admin">
+              💰 Total recaudado: $130 USD
+            </div>
+            <div class="prizes-title">🏆 Reparto de Premios</div>
+            <div class="prize-item">
+              <span class="prize-position">🥇 1er Lugar</span>
+              <span class="prize-amount" id="prize-1st-admin">$65 USD</span>
+            </div>
+            <div class="prize-item">
+              <span class="prize-position">🥈 2do Lugar</span>
+              <span class="prize-amount" id="prize-2nd-admin">$40 USD</span>
+            </div>
+            <div class="prize-item">
+              <span class="prize-position">🥉 3er Lugar</span>
+              <span class="prize-amount" id="prize-3rd-admin">$25 USD</span>
+            </div>
           </div>
-          <div class="prizes-title">🏆 Reparto de Premios</div>
-          <div class="prize-item">
-            <span class="prize-position">🥇 1er Lugar</span>
-            <span class="prize-amount" id="prize-1st-admin">$65 USD</span>
-          </div>
-          <div class="prize-item">
-            <span class="prize-position">🥈 2do Lugar</span>
-            <span class="prize-amount" id="prize-2nd-admin">$40 USD</span>
-          </div>
-          <div class="prize-item">
-            <span class="prize-position">🥉 3er Lugar</span>
-            <span class="prize-amount" id="prize-3rd-admin">$25 USD</span>
-          </div>
-        </div>
 
-        <div id="admin-ranking" class="ranking-list">
+          <div id="admin-ranking" class="ranking-list"></div>
         </div>
       </div>
     </div>
@@ -661,24 +717,16 @@
 </div>
 
 <script>
+const GITHUB_TOKEN = "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";
+const GITHUB_REPO = "christiti99-crypto/polla-mundialista";
+const GITHUB_FILE = "polla_data.json";
 const ADMIN_PASSWORD = "bde2026";
 const MIN_BET = 10;
 const BASE_POINTS = 3;
 
 const PARTICIPANTS = [
-  "Alvaro Andrade",
-  "Paola Jimenez",
-  "Javier Piedra",
-  "Fernanda",
-  "Lou",
-  "Christian",
-  "Pamela Flores",
-  "Xavier Carrillo",
-  "Carlos Ponton",
-  "Grace Granja",
-  "Diana",
-  "Carlos",
-  "Andrea"
+  "Alvaro Andrade", "Paola Jimenez", "Javier Piedra", "Fernanda", "Lou", "Christian",
+  "Pamela Flores", "Xavier Carrillo", "Carlos Ponton", "Grace Granja", "Diana", "Carlos", "Andrea"
 ];
 
 const MATCHES = {
@@ -783,117 +831,103 @@ const MATCHES = {
 const PHASES = ["Grupo A", "Grupo B", "Grupo C", "Grupo D", "Grupo E", "Grupo F", "Grupo G", "Grupo H", "Grupo I", "Grupo J", "Grupo K", "Grupo L"];
 
 let currentPhase = "Grupo A";
-let updateInterval = null;
+let pollaData = null;
 
-function initStorage() {
-  if (!localStorage.getItem('polla_predictions')) {
-    const pred = {};
-    PARTICIPANTS.forEach(p => {
-      pred[p] = {};
-      Object.values(MATCHES).forEach(matches => {
-        matches.forEach(m => {
-          pred[p][m.id] = '';
-        });
-      });
+async function loadDataFromGitHub() {
+  try {
+    const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`;
+    const response = await fetch(url, {
+      headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
     });
-    localStorage.setItem('polla_predictions', JSON.stringify(pred));
+
+    if (response.ok) {
+      const data = await response.json();
+      const content = atob(data.content);
+      pollaData = JSON.parse(content);
+    } else {
+      initializeDefaultData();
+    }
+  } catch (error) {
+    console.error('Error loading from GitHub:', error);
+    initializeDefaultData();
   }
-  if (!localStorage.getItem('polla_results')) {
-    const res = {};
+
+  document.getElementById('loading').classList.add('hidden');
+  document.getElementById('main-content').classList.remove('hidden');
+  document.getElementById('mode-text').textContent = 'Selecciona una opción';
+  loadParticipantDropdown();
+  renderPhaseSelector('participant');
+}
+
+function initializeDefaultData() {
+  pollaData = { bets: {}, predictions: {}, results: {}, closedGroups: [] };
+  
+  PARTICIPANTS.forEach(p => {
+    pollaData.bets[p] = { amount: MIN_BET, paid: false };
+    pollaData.predictions[p] = {};
     Object.values(MATCHES).forEach(matches => {
       matches.forEach(m => {
-        res[m.id] = '';
+        pollaData.predictions[p][m.id] = '';
       });
     });
-    localStorage.setItem('polla_results', JSON.stringify(res));
-  }
-  if (!localStorage.getItem('polla_bets')) {
-    const bets = {};
-    PARTICIPANTS.forEach(p => {
-      bets[p] = MIN_BET;
+  });
+
+  Object.values(MATCHES).forEach(matches => {
+    matches.forEach(m => {
+      pollaData.results[m.id] = '';
     });
-    localStorage.setItem('polla_bets', JSON.stringify(bets));
+  });
+}
+
+async function saveToGitHub() {
+  try {
+    const url = `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`;
+    const content = btoa(JSON.stringify(pollaData, null, 2));
+
+    let method = 'PUT';
+    let body = {
+      message: `Actualizar datos de la polla - ${new Date().toLocaleString()}`,
+      content: content
+    };
+
+    const getResponse = await fetch(url, {
+      headers: { 'Authorization': `token ${GITHUB_TOKEN}` }
+    });
+
+    if (getResponse.ok) {
+      const fileData = await getResponse.json();
+      body.sha = fileData.sha;
+    }
+
+    const response = await fetch(url, {
+      method: method,
+      headers: {
+        'Authorization': `token ${GITHUB_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+
+    if (response.ok) {
+      alert('✅ Datos guardados en GitHub correctamente');
+      location.reload();
+    } else {
+      alert('❌ Error al guardar en GitHub');
+    }
+  } catch (error) {
+    console.error('Error saving to GitHub:', error);
+    alert('❌ Error de conexión con GitHub');
   }
-  if (!localStorage.getItem('polla_closed_groups')) {
-    localStorage.setItem('polla_closed_groups', JSON.stringify([]));
-  }
 }
 
-function getMatchDateTime(match) {
-  return new Date(`${match.date}T${match.time}:00`);
-}
-
-function isMatchLocked(match) {
-  const matchTime = getMatchDateTime(match);
-  const now = new Date();
-  const oneHourBefore = new Date(matchTime.getTime() - 60 * 60 * 1000);
-  return now >= oneHourBefore;
-}
-
-function getCountdown(match) {
-  const matchTime = getMatchDateTime(match);
-  const now = new Date();
-  const oneHourBefore = new Date(matchTime.getTime() - 60 * 60 * 1000);
+async function savePaymentsToGitHub() {
+  const checkboxes = document.querySelectorAll('input[name="payment-checkbox"]');
+  checkboxes.forEach(cb => {
+    const participant = cb.dataset.participant;
+    pollaData.bets[participant].paid = cb.checked;
+  });
   
-  if (now >= oneHourBefore) {
-    return "🔒 CERRADO";
-  }
-  
-  const diff = oneHourBefore - now;
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  
-  if (hours > 0) {
-    return `⏰ ${hours}h ${minutes}m`;
-  }
-  return `⏰ ${minutes}m`;
-}
-
-function isGroupClosed(groupName) {
-  const closed = JSON.parse(localStorage.getItem('polla_closed_groups') || '[]');
-  return closed.includes(groupName);
-}
-
-function closeCurrentGroup() {
-  const closed = JSON.parse(localStorage.getItem('polla_closed_groups') || '[]');
-  if (!closed.includes(currentPhase)) {
-    closed.push(currentPhase);
-    localStorage.setItem('polla_closed_groups', JSON.stringify(closed));
-    showAlert(`✓ ${currentPhase} ha sido cerrado correctamente`);
-    loadAdminPanel();
-    renderPhaseSelector('admin');
-  }
-}
-
-function unlockCurrentGroup() {
-  const closed = JSON.parse(localStorage.getItem('polla_closed_groups') || '[]');
-  const index = closed.indexOf(currentPhase);
-  if (index > -1) {
-    closed.splice(index, 1);
-    localStorage.setItem('polla_closed_groups', JSON.stringify(closed));
-    showAlert(`✓ ${currentPhase} ha sido desbloqueado`);
-    loadAdminPanel();
-    renderPhaseSelector('admin');
-  }
-}
-
-function updateBetMultiplier() {
-  const betAmount = parseFloat(document.getElementById('bet-amount').value) || MIN_BET;
-  if (betAmount < MIN_BET) {
-    document.getElementById('bet-amount').value = MIN_BET;
-    return;
-  }
-  const multiplier = (betAmount / MIN_BET).toFixed(1);
-  document.getElementById('bet-multiplier').textContent = 
-    `Multiplicador: ${multiplier}x (Puntos base × ${multiplier})`;
-  
-  const currentParticipant = document.getElementById('participant-name').value;
-  if (currentParticipant) {
-    const bets = JSON.parse(localStorage.getItem('polla_bets') || '{}');
-    bets[currentParticipant] = betAmount;
-    localStorage.setItem('polla_bets', JSON.stringify(bets));
-    loadParticipantData();
-  }
+  await saveToGitHub();
 }
 
 function switchTab(tab) {
@@ -905,25 +939,10 @@ function switchTab(tab) {
   
   if (tab === 'participante') {
     document.getElementById('mode-text').textContent = 'Modo: Participante';
-    loadParticipantDropdown();
-    renderPhaseSelector('participant');
-    startAutoUpdate('participant');
   } else {
     document.getElementById('mode-text').textContent = 'Modo: Administrador';
     renderPhaseSelector('admin');
-    startAutoUpdate('admin');
   }
-}
-
-function startAutoUpdate(mode) {
-  if (updateInterval) clearInterval(updateInterval);
-  updateInterval = setInterval(() => {
-    if (mode === 'participant') {
-      loadParticipantData();
-    } else {
-      loadAdminPanel();
-    }
-  }, 60000);
 }
 
 function renderPhaseSelector(mode) {
@@ -933,7 +952,7 @@ function renderPhaseSelector(mode) {
   PHASES.forEach(phase => {
     const btn = document.createElement('button');
     btn.className = `group-btn ${phase === currentPhase ? 'active' : ''}`;
-    if (isGroupClosed(phase)) {
+    if (pollaData.closedGroups.includes(phase)) {
       btn.classList.add('locked');
     }
     btn.textContent = phase;
@@ -964,65 +983,57 @@ function loadParticipantDropdown() {
   });
 }
 
+function getMatchDateTime(match) {
+  return new Date(`${match.date}T${match.time}:00`);
+}
+
+function isMatchLocked(match) {
+  const matchTime = getMatchDateTime(match);
+  const now = new Date();
+  const oneHourBefore = new Date(matchTime.getTime() - 60 * 60 * 1000);
+  return now >= oneHourBefore;
+}
+
+function getCountdown(match) {
+  const matchTime = getMatchDateTime(match);
+  const now = new Date();
+  const oneHourBefore = new Date(matchTime.getTime() - 60 * 60 * 1000);
+  
+  if (now >= oneHourBefore) return "🔒 CERRADO";
+  
+  const diff = oneHourBefore - now;
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  
+  return hours > 0 ? `⏰ ${hours}h ${minutes}m` : `⏰ ${minutes}m`;
+}
+
 function calculateScore(prediction, result, multiplier) {
   if (!prediction || !result) return 0;
-  if (prediction === result) return BASE_POINTS * multiplier;
-  return 0;
+  return prediction === result ? BASE_POINTS * multiplier : 0;
 }
 
 function getTotalBet() {
-  const bets = JSON.parse(localStorage.getItem('polla_bets') || '{}');
   let total = 0;
   PARTICIPANTS.forEach(p => {
-    total += (bets[p] || MIN_BET);
+    total += (pollaData.bets[p]?.amount || MIN_BET);
   });
   return total;
 }
 
-function calculateProportionalPrize(participantBet, totalBet, prizePosition) {
-  if (totalBet === 0) return 0;
-  
-  // Montos fijos originales
-  const ORIGINAL_PRIZES = { first: 65, second: 40, third: 25 };
-  const ORIGINAL_TOTAL = 130; // 13 personas × $10
-  
-  // Escalar el premio según total actual
-  const scale = totalBet / ORIGINAL_TOTAL;
-  let prizeAmount = 0;
-  
-  if (prizePosition === 1) {
-    prizeAmount = ORIGINAL_PRIZES.first * scale;
-  } else if (prizePosition === 2) {
-    prizeAmount = ORIGINAL_PRIZES.second * scale;
-  } else if (prizePosition === 3) {
-    prizeAmount = ORIGINAL_PRIZES.third * scale;
-  }
-  
-  // Distribuir el premio proporcionalmente a la apuesta del ganador
-  const betRatio = participantBet / totalBet;
-  return betRatio * prizeAmount;
-}
-
 function updatePrizes() {
   const totalBet = getTotalBet();
-  
-  // Montos fijos originales y su total base
   const ORIGINAL_PRIZES = { first: 65, second: 40, third: 25 };
-  const ORIGINAL_TOTAL = 130; // 13 personas × $10
-  
-  // Escalar los premios proporcionalmente
+  const ORIGINAL_TOTAL = 130;
   const scale = totalBet / ORIGINAL_TOTAL;
+  
   const prize1st = (ORIGINAL_PRIZES.first * scale).toFixed(2);
   const prize2nd = (ORIGINAL_PRIZES.second * scale).toFixed(2);
   const prize3rd = (ORIGINAL_PRIZES.third * scale).toFixed(2);
   
-  // Mostrar el total recaudado
-  document.getElementById('quota-display').textContent = 
-    `💰 Total recaudado: $${totalBet.toFixed(2)} USD (Apuesta base: $10 × 13 personas)`;
-  document.getElementById('quota-display-admin').textContent = 
-    `💰 Total recaudado: $${totalBet.toFixed(2)} USD (Apuesta base: $10 × 13 personas)`;
+  document.getElementById('quota-display').textContent = `💰 Total recaudado: $${totalBet.toFixed(2)} USD`;
+  document.getElementById('quota-display-admin').textContent = `💰 Total recaudado: $${totalBet.toFixed(2)} USD`;
   
-  // Los premios escalados proporcionalmente
   document.getElementById('prize-1st').textContent = `$${prize1st} USD`;
   document.getElementById('prize-2nd').textContent = `$${prize2nd} USD`;
   document.getElementById('prize-3rd').textContent = `$${prize3rd} USD`;
@@ -1042,51 +1053,37 @@ function loadParticipantData() {
   }
   
   panel.classList.remove('hidden');
+  updatePrizes();
   
-  const bets = JSON.parse(localStorage.getItem('polla_bets') || '{}');
-  const betAmount = bets[name] || MIN_BET;
+  const betAmount = pollaData.bets[name]?.amount || MIN_BET;
   const multiplier = betAmount / MIN_BET;
   
   document.getElementById('bet-amount').value = betAmount;
-  document.getElementById('bet-multiplier').textContent = 
-    `Multiplicador: ${multiplier.toFixed(1)}x (Puntos base × ${multiplier.toFixed(1)})`;
+  document.getElementById('bet-multiplier').textContent = `Multiplicador: ${multiplier.toFixed(1)}x`;
   
-  updatePrizes();
-  
-  const predictions = JSON.parse(localStorage.getItem('polla_predictions') || '{}');
-  const results = JSON.parse(localStorage.getItem('polla_results') || '{}');
   const matches = MATCHES[currentPhase] || [];
-  const manualClosed = isGroupClosed(currentPhase);
-  
-  const statusAlert = document.getElementById('group-status-participant');
-  if (manualClosed) {
-    statusAlert.classList.remove('hidden');
-  } else {
-    statusAlert.classList.add('hidden');
-  }
-  
   let html = '';
+  
   matches.forEach(m => {
-    const pred = predictions[name]?.[m.id] || '';
-    const result = results[m.id] || '';
+    const pred = pollaData.predictions[name]?.[m.id] || '';
+    const result = pollaData.results[m.id] || '';
     const score = calculateScore(pred, result, multiplier);
     const locked = isMatchLocked(m);
-    const countdown = getCountdown(m);
     
     const resultText = result === 'L' ? m.local : result === 'V' ? m.visitante : result === 'E' ? 'Empate' : '-';
-    const disabled = locked || manualClosed;
+    const disabled = locked;
     
-    html += `<tr ${locked ? 'class="closing-soon"' : ''}>
+    html += `<tr>
       <td>
         <strong>${m.date}</strong>
         <div class="match-time">${m.time}</div>
-        <div class="countdown">${countdown}</div>
+        <div class="countdown">${getCountdown(m)}</div>
       </td>
       <td class="match-cell">
         <div class="match-teams">${m.local} vs ${m.visitante}</div>
       </td>
       <td>
-        <select class="prediction-select" onchange="savePrediction('${name}', '${m.id}', this.value)" ${disabled ? 'disabled' : ''}>
+        <select class="prediction-select" onchange="updatePrediction('${name}', '${m.id}', this.value)" ${disabled ? 'disabled' : ''}>
           <option value="">--</option>
           <option value="L" ${pred === 'L' ? 'selected' : ''}>${m.local} ⭐</option>
           <option value="V" ${pred === 'V' ? 'selected' : ''}>${m.visitante} ⭐</option>
@@ -1099,25 +1096,37 @@ function loadParticipantData() {
   });
   
   document.getElementById('participant-matches').innerHTML = html;
-  document.getElementById('save-btn-participant').disabled = manualClosed;
   updateRanking('participant', name);
 }
 
-function savePrediction(name, matchId, value) {
+function updatePrediction(name, matchId, value) {
   const match = Object.values(MATCHES).flat().find(m => m.id === matchId);
   if (isMatchLocked(match)) {
-    showAlert('⏰ No se puede modificar: El partido inicia en menos de 1 hora');
+    alert('⏰ No se puede modificar: El partido inicia en menos de 1 hora');
     return;
   }
-  if (isGroupClosed(currentPhase)) {
-    showAlert('🔒 No se pueden modificar predicciones en un grupo cerrado');
+  
+  if (!pollaData.predictions[name]) pollaData.predictions[name] = {};
+  pollaData.predictions[name][matchId] = value;
+}
+
+function updateBetMultiplier() {
+  const name = document.getElementById('participant-name').value;
+  const betAmount = parseFloat(document.getElementById('bet-amount').value) || MIN_BET;
+  
+  if (betAmount < MIN_BET) {
+    document.getElementById('bet-amount').value = MIN_BET;
     return;
   }
-  const predictions = JSON.parse(localStorage.getItem('polla_predictions') || '{}');
-  if (!predictions[name]) predictions[name] = {};
-  predictions[name][matchId] = value;
-  localStorage.setItem('polla_predictions', JSON.stringify(predictions));
-  loadParticipantData();
+  
+  const multiplier = (betAmount / MIN_BET).toFixed(1);
+  document.getElementById('bet-multiplier').textContent = `Multiplicador: ${multiplier}x`;
+  
+  if (name) {
+    pollaData.bets[name].amount = betAmount;
+    updatePrizes();
+    loadParticipantData();
+  }
 }
 
 function validateAdmin() {
@@ -1125,55 +1134,60 @@ function validateAdmin() {
   if (pwd === ADMIN_PASSWORD) {
     document.getElementById('admin-pwd').parentElement.classList.add('hidden');
     document.getElementById('admin-panel').classList.remove('hidden');
+    renderPaymentsTable();
     renderPhaseSelector('admin');
     loadAdminPanel();
-    showAlert('Acceso concedido ✓');
+    alert('Acceso concedido ✓');
   } else if (pwd) {
-    showAlert('Contraseña incorrecta ✗');
+    alert('Contraseña incorrecta ✗');
   }
+}
+
+function renderPaymentsTable() {
+  const tbody = document.getElementById('payments-table');
+  tbody.innerHTML = '';
+  
+  PARTICIPANTS.forEach(p => {
+    const bet = pollaData.bets[p];
+    const paid = bet?.paid || false;
+    
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${p}</td>
+      <td>$${bet?.amount || MIN_BET}</td>
+      <td class="checkbox-cell">
+        <input type="checkbox" name="payment-checkbox" data-participant="${p}" ${paid ? 'checked' : ''}>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
 }
 
 function loadAdminPanel() {
   updatePrizes();
   
-  const results = JSON.parse(localStorage.getItem('polla_results') || '{}');
   const matches = MATCHES[currentPhase] || [];
-  const manualClosed = isGroupClosed(currentPhase);
-  
-  const statusAlert = document.getElementById('group-status-admin');
-  if (manualClosed) {
-    statusAlert.classList.remove('hidden');
-  } else {
-    statusAlert.classList.add('hidden');
-  }
-  
-  document.getElementById('close-group-btn').style.display = manualClosed ? 'none' : 'inline-block';
-  document.getElementById('unlock-group-btn').style.display = manualClosed ? 'inline-block' : 'none';
-  
   let html = '';
+  
   matches.forEach(m => {
-    const result = results[m.id] || '';
-    const locked = isMatchLocked(m);
-    const countdown = getCountdown(m);
-    const disabled = manualClosed;
+    const result = pollaData.results[m.id] || '';
     
-    html += `<tr ${locked || manualClosed ? 'class="locked"' : ''}>
+    html += `<tr>
       <td>
         <strong>${m.date}</strong>
         <div class="match-time">${m.time}</div>
-        <div class="countdown">${countdown}</div>
+        <div class="countdown">${getCountdown(m)}</div>
       </td>
       <td class="match-cell">
         <div class="match-teams">${m.local} vs ${m.visitante}</div>
       </td>
       <td>
-        <select class="prediction-select" onchange="saveResult('${m.id}', this.value)" ${disabled ? 'disabled' : ''}>
+        <select class="prediction-select" onchange="updateResult('${m.id}', this.value)">
           <option value="">--</option>
           <option value="L" ${result === 'L' ? 'selected' : ''}>${m.local} ⭐</option>
           <option value="V" ${result === 'V' ? 'selected' : ''}>${m.visitante} ⭐</option>
           <option value="E" ${result === 'E' ? 'selected' : ''}>Empate 🤝</option>
         </select>
-        ${result ? '<span class="lock-icon">✓</span>' : ''}
       </td>
     </tr>`;
   });
@@ -1182,31 +1196,44 @@ function loadAdminPanel() {
   updateRanking('admin');
 }
 
-function saveResult(matchId, value) {
-  if (isGroupClosed(currentPhase)) {
-    showAlert('🔒 No se pueden modificar resultados en un grupo cerrado');
-    return;
-  }
-  const results = JSON.parse(localStorage.getItem('polla_results') || '{}');
-  results[matchId] = value;
-  localStorage.setItem('polla_results', JSON.stringify(results));
+function updateResult(matchId, value) {
+  pollaData.results[matchId] = value;
   loadAdminPanel();
 }
 
+function closeCurrentGroup() {
+  if (!pollaData.closedGroups.includes(currentPhase)) {
+    pollaData.closedGroups.push(currentPhase);
+    alert(`✓ ${currentPhase} cerrado`);
+    renderPhaseSelector('admin');
+    loadAdminPanel();
+  }
+}
+
+function unlockCurrentGroup() {
+  const index = pollaData.closedGroups.indexOf(currentPhase);
+  if (index > -1) {
+    pollaData.closedGroups.splice(index, 1);
+    alert(`✓ ${currentPhase} desbloqueado`);
+    renderPhaseSelector('admin');
+    loadAdminPanel();
+  }
+}
+
 function updateRanking(mode, currentParticipant = null) {
-  const predictions = JSON.parse(localStorage.getItem('polla_predictions') || '{}');
-  const results = JSON.parse(localStorage.getItem('polla_results') || '{}');
-  const bets = JSON.parse(localStorage.getItem('polla_bets') || '{}');
-  const totalBet = getTotalBet();
-  
   const scores = {};
+  const totalBet = getTotalBet();
+  const ORIGINAL_PRIZES = { first: 65, second: 40, third: 25 };
+  const ORIGINAL_TOTAL = 130;
+  const scale = totalBet / ORIGINAL_TOTAL;
+  
   PARTICIPANTS.forEach(p => {
     let total = 0;
-    const multiplier = (bets[p] || MIN_BET) / MIN_BET;
+    const multiplier = (pollaData.bets[p]?.amount || MIN_BET) / MIN_BET;
     Object.values(MATCHES).forEach(matches => {
       matches.forEach(m => {
-        const pred = predictions[p]?.[m.id] || '';
-        const result = results[m.id] || '';
+        const pred = pollaData.predictions[p]?.[m.id] || '';
+        const result = pollaData.results[m.id] || '';
         total += calculateScore(pred, result, multiplier);
       });
     });
@@ -1215,11 +1242,12 @@ function updateRanking(mode, currentParticipant = null) {
   
   const ranking = Object.entries(scores)
     .sort((a, b) => b[1] - a[1])
-    .map((entry, idx) => ({ 
-      name: entry[0], 
-      score: entry[1], 
-      pos: idx + 1, 
-      bet: bets[entry[0]] || MIN_BET 
+    .map((entry, idx) => ({
+      name: entry[0],
+      score: entry[1],
+      pos: idx + 1,
+      bet: pollaData.bets[entry[0]]?.amount || MIN_BET,
+      paid: pollaData.bets[entry[0]]?.paid || false
     }));
   
   let html = '';
@@ -1228,26 +1256,29 @@ function updateRanking(mode, currentParticipant = null) {
     if (item.pos === 1) classes.push('first');
     if (item.pos === 2) classes.push('second');
     if (item.pos === 3) classes.push('third');
-    if (item.name === currentParticipant) classes.push('highlight');
     
-    // Calcular premio proporcional
     let prizeText = '';
+    let prize = 0;
     if (item.pos === 1) {
-      const prize = calculateProportionalPrize(item.bet, totalBet, 1);
+      prize = (item.bet / totalBet) * (ORIGINAL_PRIZES.first * scale);
       prizeText = ` → Gana: $${prize.toFixed(2)}`;
     } else if (item.pos === 2) {
-      const prize = calculateProportionalPrize(item.bet, totalBet, 2);
+      prize = (item.bet / totalBet) * (ORIGINAL_PRIZES.second * scale);
       prizeText = ` → Gana: $${prize.toFixed(2)}`;
     } else if (item.pos === 3) {
-      const prize = calculateProportionalPrize(item.bet, totalBet, 3);
+      prize = (item.bet / totalBet) * (ORIGINAL_PRIZES.third * scale);
       prizeText = ` → Gana: $${prize.toFixed(2)}`;
     }
+    
+    const paymentBadge = item.paid 
+      ? '<span class="payment-badge payment-paid">✅ PAGÓ</span>'
+      : '<span class="payment-badge payment-pending">❌ PENDIENTE</span>';
     
     html += `<div class="${classes.join(' ')}">
       <div class="ranking-position">${item.pos}</div>
       <div class="ranking-name">
         ${item.name}
-        <div class="ranking-info" style="font-size: 11px; color: #999; margin-top: 2px;">Apuesta: $${item.bet}${prizeText}</div>
+        <div class="ranking-info">Apuesta: $${item.bet}${prizeText}${paymentBadge}</div>
       </div>
       <div class="ranking-score">${item.score.toFixed(1)} pts</div>
     </div>`;
@@ -1260,11 +1291,8 @@ function updateRanking(mode, currentParticipant = null) {
   }
 }
 
-function showAlert(message) {
-  alert(message);
-}
-
-initStorage();
+// Cargar datos al iniciar
+loadDataFromGitHub();
 </script>
 
 </body>
