@@ -1,0 +1,20 @@
+{
+  "bets": {
+    "Alvaro Andrade": { "amount": 10, "paid": false },
+    "Paola Jimenez": { "amount": 10, "paid": false },
+    "Javier Piedra": { "amount": 10, "paid": false },
+    "Fernanda": { "amount": 10, "paid": false },
+    "Lou": { "amount": 10, "paid": false },
+    "Christian": { "amount": 10, "paid": false },
+    "Pamela Flores": { "amount": 10, "paid": false },
+    "Xavier Carrillo": { "amount": 10, "paid": false },
+    "Carlos Ponton": { "amount": 10, "paid": false },
+    "Grace Granja": { "amount": 10, "paid": false },
+    "Diana": { "amount": 10, "paid": false },
+    "Carlos": { "amount": 10, "paid": false },
+    "Andrea": { "amount": 10, "paid": false }
+  },
+  "predictions": {},
+  "results": {},
+  "closedGroups": []
+}
